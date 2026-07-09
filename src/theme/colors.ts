@@ -1,0 +1,21 @@
+export const Colors = {
+  bg: '#D7DE36',
+  bg1: '#ecf185ff',
+  white: '#ffffff',
+  black: '#000000',
+  card: '#111A33',
+  text: '#EAF0FF',
+  muted: 'rgba(234,240,255,0.72)',
+  primary: '#5B8CFF',
+  primaryDark: '#3B6DFF',
+  border: 'rgba(234,240,255,0.12)',
+  inputBg: 'rgba(255,255,255,0.06)',
+  danger: '#FF5B6E',
+  titleTextColorGray: "#93959eff",
+  titleTextColor: "#13204B",
+  darkBlue: "#13204B",
+  red: "#F23B3B",
+  green: "#6EBF62",
+  gray: "#F3F5F9",
+};
+

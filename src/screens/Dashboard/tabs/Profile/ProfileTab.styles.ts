@@ -1,0 +1,382 @@
+import { StyleSheet } from 'react-native';
+import { Colors } from '@/theme/colors';
+import { Fonts } from '@/utils/fonts';
+
+export const styles = StyleSheet.create({
+  rootContent: {
+    flex: 1,
+    minHeight: 0,
+  },
+  keyboardAvoid: {
+    flex: 1,
+    minHeight: 0,
+  },
+  scroll: {
+    flex: 1,
+  },
+  headerSideRight: {
+    justifyContent: 'flex-end',
+  },
+  logoutBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    backgroundColor: Colors.red,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  scrollContent: {
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 120,
+  },
+
+  avatarWrap: {
+    alignItems: 'center',
+    marginBottom: -40,
+    zIndex: 2,
+  },
+  avatarPressable: {
+    position: 'relative',
+  },
+  avatarCircle: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: Colors.darkBlue,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: 88,
+    height: 88,
+  },
+  avatarEditBtn: {
+    position: 'absolute',
+    right: -2,
+    bottom: -2,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: Colors.green,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 2,
+    borderColor: Colors.white,
+  },
+
+  firstCard: {
+    paddingTop: 48,
+  },
+
+  card: {
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    padding: 14,
+    marginBottom: 12,
+    borderWidth: 1.5,
+    borderColor: 'transparent',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 5,
+  },
+  cardEditing: {
+    borderColor: Colors.green,
+    backgroundColor: '#FAFCF9',
+  },
+  cardTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  cardTitleLeadIcon: {
+    marginRight: 8,
+    justifyContent: 'center',
+    backgroundColor: Colors.gray,
+    width: 34,
+    height: 34,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  cardTitleIconBox: {
+    width: 34,
+    height: 34,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  cardTitleIconBoxGreen: {
+    backgroundColor: Colors.green,
+  },
+  cardTitleIconBoxRed: {
+    backgroundColor: Colors.red,
+  },
+  cardTitleMain: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    minWidth: 0,
+  },
+  cardTitleText: {
+    fontSize: 16,
+    color: Colors.darkBlue,
+    fontFamily: Fonts.PoppinsSemiBold,
+  },
+  editingBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 6,
+    backgroundColor: 'rgba(110, 191, 98, 0.14)',
+  },
+  editingBadgeText: {
+    fontSize: 10,
+    color: Colors.green,
+    fontFamily: Fonts.MontserratSemiBold,
+    letterSpacing: 0.4,
+    textTransform: 'uppercase',
+  },
+  editToggleBtn: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editToggleBtnActive: {
+    backgroundColor: Colors.darkBlue,
+  },
+  manageLink: {
+    fontSize: 14,
+    color: Colors.darkBlue,
+    fontFamily: Fonts.MontserratMedium,
+  },
+
+  /** Matches RegisterScreen input styling */
+  field: {
+    marginBottom: 10,
+  },
+  fieldLabel: {
+    fontSize: 14,
+    color: Colors.titleTextColor,
+    marginBottom: 6,
+    fontFamily: Fonts.MontserratRegular,
+    opacity: 0.6,
+  },
+  fieldInputWrap: {
+    height: 44,
+    borderRadius: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    display: 'flex',
+    paddingHorizontal: 12,
+  },
+  fieldInputWrapLocked: {
+    backgroundColor: Colors.gray,
+    borderWidth: 1,
+    borderColor: '#E7ECF5',
+  },
+  fieldInputWrapEditing: {
+    backgroundColor: Colors.white,
+    borderWidth: 1.5,
+    borderColor: 'rgba(110, 191, 98, 0.35)',
+  },
+  fieldInputWrapMultiline: {
+    minHeight: 100,
+    borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+  },
+  fieldIconCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 10,
+  },
+  fieldInput: {
+    flex: 1,
+    color: Colors.titleTextColor,
+    fontSize: 14,
+    // fontWeight: '400',
+    fontFamily: Fonts.MontserratRegular,
+    padding: 0,
+    margin: 0,
+  },
+  fieldInputMultiline: {
+    minHeight: 80,
+    textAlignVertical: 'top',
+  },
+  fieldInputLocked: {
+    color: Colors.titleTextColor,
+  },
+  fieldLabelLocked: {
+    opacity: 0.55,
+  },
+  fieldLabelEditing: {
+    opacity: 1,
+    color: Colors.darkBlue,
+    fontFamily: Fonts.MontserratSemiBold,
+  },
+  selectPlaceholder: { color: 'rgba(10,20,40,0.45)' },
+  selectText: { color: '#0B1B3A' },
+  chevIcon: {
+    marginLeft: 4,
+  },
+  halfRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  halfCol: {
+    flex: 1,
+    minWidth: 0,
+  },
+
+  paymentCard: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F1F4F8',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 12,
+    marginBottom: 10,
+  },
+  visaMark: {
+    fontSize: 8,
+    fontWeight: '900',
+    backgroundColor: '#000930',
+    fontFamily: Fonts.PoppinsBold,
+    marginRight: 10,
+    fontStyle: 'italic',
+    color: Colors.white,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 4,
+  },
+  paymentMid: {
+    flex: 1,
+    minWidth: 0,
+    justifyContent: 'center',
+  },
+  maskedPan: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: Colors.darkBlue,
+    fontFamily: Fonts.MontserratSemiBold,
+  },
+  expiresLabel: {
+    marginTop: 4,
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#45464F',
+    fontFamily: Fonts.MontserratSemiBold,
+    letterSpacing: 0.5,
+  },
+  defaultBadge: {
+    backgroundColor: '#1B6D1A1A',
+    paddingHorizontal: 8,
+    paddingVertical: 6,
+    borderRadius: 6,
+    marginLeft: 8,
+  },
+  defaultBadgeText: {
+    fontSize: 9,
+    fontWeight: '800',
+    color: Colors.green,
+    fontFamily: Fonts.PoppinsBold,
+    letterSpacing: 0.6,
+  },
+
+  addPaymentBox: {
+    borderWidth: 2,
+    borderStyle: 'dashed',
+    borderColor: '#E7ECF5',
+    borderRadius: 12,
+    paddingVertical: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  addPaymentLabel: {
+    fontSize: 14,
+    // fontWeight: '500',
+    color: Colors.titleTextColorGray,
+    fontFamily: Fonts.MontserratMedium,
+  },
+
+  saveWrap: {
+    // paddingHorizontal: 12,
+    paddingTop: 4,
+    paddingBottom: 8,
+  },
+  saveBtn: {
+    marginTop: 14,
+    height: 46,
+    width: '100%',
+    alignSelf: 'stretch',
+    backgroundColor: Colors.darkBlue,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  saveTitle: {
+    color: Colors.white,
+    fontSize: 16,
+    fontFamily: Fonts.PoppinsMedium,
+  },
+  saveAccessory: {
+    position: 'absolute',
+    right: 5,
+    height: 35,
+    width: 35,
+    borderRadius: 50,
+    backgroundColor: Colors.green,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+    justifyContent: 'flex-end',
+  },
+  modalSheet: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 18,
+    borderTopRightRadius: 18,
+    paddingHorizontal: 16,
+    paddingTop: 14,
+    paddingBottom: 18,
+  },
+  modalTitle: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: '#0B1B3A',
+    marginBottom: 10,
+    textAlign: 'center',
+    fontFamily: Fonts.PoppinsBold,
+  },
+  modalOption: {
+    height: 46,
+    borderRadius: 12,
+    backgroundColor: '#F1F4F8',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 10,
+  },
+  modalOptionText: {
+    fontSize: 13,
+    fontWeight: '800',
+    color: '#0B1B3A',
+    fontFamily: Fonts.PoppinsBold,
+  },
+});
