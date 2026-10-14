@@ -1,4 +1,4 @@
-package con.lb50.app
+package com.lb50.app
 
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen

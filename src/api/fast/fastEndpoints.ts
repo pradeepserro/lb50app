@@ -9,8 +9,11 @@ export const fetchFastHoursApi = async (): Promise<GetFastHoursResponse> => {
 
 function buildFastFormData(params: SaveFastParams): FormData {
   const formData = new FormData();
+  formData.append('id', params.id == null ? '' : String(params.id));
   formData.append('start_datetime', params.start_datetime);
+  formData.append('current_datetime', params.current_datetime);
   formData.append('hours', String(params.hours));
+  formData.append('meal_feedback', String(params.meal_feedback));
   return formData;
 }
 

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "149088564486",
+    "project_id": "lb50app",
+    "storage_bucket": "lb50app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149088564486:android:4922a5a3c9ef0eafa61a87",
+        "android_client_info": {
+          "package_name": "com.lb50.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMTiEd2fx_VnGyHGZ6LeImiImxZm9aAjI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

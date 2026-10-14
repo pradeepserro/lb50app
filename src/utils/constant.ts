@@ -27,6 +27,10 @@ export const API_ENDPOINTS = {
     LOG_6_PILLARS: '/log6pillars',
     LOG_OTHERS: '/logothers',
     ANALYZE: '/analyze',
+    TICKET_LIST: '/ticket_list',
+    TICKET_TYPES: '/ticket_types',
+    TICKET: '/ticket',
+    DEVICE_TOKEN: '/device-token',
 };
 
 export const QUESTIONNAIRE_FROM_LOCALE = 2;

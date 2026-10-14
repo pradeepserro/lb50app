@@ -169,6 +169,38 @@ export const styles: any = StyleSheet.create({
   insightCard: {
     marginTop: 20,
   },
+  feedbackRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 14,
+    paddingVertical: 8,
+  },
+  feedbackCheckbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.titleTextColorGray,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  feedbackCheckboxSelected: {
+    backgroundColor: Colors.green,
+    borderColor: Colors.green,
+  },
+  feedbackCheckmark: {
+    color: Colors.white,
+    fontSize: 12,
+    fontFamily: Fonts.MontserratSemiBold,
+  },
+  feedbackLabel: {
+    flexShrink: 1,
+    color: Colors.darkBlue,
+    fontSize: 14,
+    fontFamily: Fonts.MontserratMedium,
+  },
   footer: {
     display: 'flex',
     flexDirection: 'row',

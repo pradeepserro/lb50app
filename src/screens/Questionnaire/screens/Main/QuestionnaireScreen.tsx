@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -408,6 +408,8 @@ export function QuestionnaireScreen({ navigation }: Props) {
   const [pendingWarnLink, setPendingWarnLink] = useState<string | undefined>(undefined);
   const [downloadingDoctorForm, setDownloadingDoctorForm] = useState(false);
   const [lastSelectedOptionId, setLastSelectedOptionId] = useState<string | null>(null);
+  const [pendingRadioAutoNext, setPendingRadioAutoNext] = useState(false);
+  const nextInFlightRef = useRef(false);
 
   const getSelectedAnswerFlags = useCallback(() => {
     if (!apiData) {
@@ -570,6 +572,13 @@ export function QuestionnaireScreen({ navigation }: Props) {
     setAnswersByQuestionId(prev => ({ ...prev, [questionId]: value }));
   };
 
+  const handleRadioAnswerChange = (questionId: string, optionId: string) => {
+    if (nextInFlightRef.current) return;
+
+    handleAnswerChange(questionId, optionId);
+    setPendingRadioAutoNext(true);
+  };
+
   const displayStep = apiData?.current_count ?? 0;
   const displayTotal = apiData?.total_count ?? 0;
   const percentComplete =
@@ -670,13 +679,27 @@ export function QuestionnaireScreen({ navigation }: Props) {
     ],
   );
 
-  const onNext = async () => {
-    await submitCurrentQuestion(
-      isLastStep
-        ? QUESTIONNAIRE_PREVIOUS_NEXT.FINISH
-        : QUESTIONNAIRE_PREVIOUS_NEXT.NEXT,
-    );
-  };
+  const onNext = useCallback(async () => {
+    if (nextInFlightRef.current) return;
+
+    nextInFlightRef.current = true;
+    try {
+      await submitCurrentQuestion(
+        isLastStep
+          ? QUESTIONNAIRE_PREVIOUS_NEXT.FINISH
+          : QUESTIONNAIRE_PREVIOUS_NEXT.NEXT,
+      );
+    } finally {
+      nextInFlightRef.current = false;
+    }
+  }, [isLastStep, submitCurrentQuestion]);
+
+  useEffect(() => {
+    if (!pendingRadioAutoNext) return;
+
+    setPendingRadioAutoNext(false);
+    void onNext();
+  }, [onNext, pendingRadioAutoNext]);
 
   const onPrev = async () => {
     if (!apiData || apiData.current_count <= 1) return;
@@ -835,7 +858,7 @@ export function QuestionnaireScreen({ navigation }: Props) {
                 <React.Fragment key={opt.id}>
                   <Pressable
                     style={[styles.optionRow, isSelected && styles.optionRowSelected]}
-                    onPress={() => handleAnswerChange(q.id, opt.id)}
+                    onPress={() => handleRadioAnswerChange(q.id, opt.id)}
                   >
                     <View
                       style={[

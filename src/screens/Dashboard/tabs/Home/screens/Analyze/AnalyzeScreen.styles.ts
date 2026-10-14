@@ -43,6 +43,49 @@ export const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 3,
   },
+  summaryCard: {
+    marginBottom: 16,
+  },
+  summaryHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  summaryTitle: {
+    flex: 1,
+    marginLeft: 8,
+    fontSize: 14,
+    fontFamily: Fonts.PoppinsSemiBold,
+    color: Colors.darkBlue,
+  },
+  summaryRow: {
+    minHeight: 32,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  summaryLabel: {
+    flex: 1,
+    marginRight: 12,
+    fontSize: 12,
+    fontFamily: Fonts.MontserratRegular,
+    color: Colors.titleTextColorGray,
+  },
+  summaryValues: {
+    minWidth: 72,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  summaryValue: {
+    fontSize: 12,
+    fontFamily: Fonts.MontserratSemiBold,
+  },
+  summarySeparator: {
+    fontSize: 12,
+    fontFamily: Fonts.MontserratSemiBold,
+    color: Colors.darkBlue,
+  },
   chartCardHeader: {
     alignItems: 'center',
     marginBottom: 4,

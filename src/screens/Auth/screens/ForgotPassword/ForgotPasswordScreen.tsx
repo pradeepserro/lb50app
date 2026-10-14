@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -33,10 +34,16 @@ export function ForgotPasswordScreen({ navigation }: Props) {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <KeyboardAvoidingView
-        style={styles.safe}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <View style={styles.safe}>
+      <Image
+        source={require('@assets/images/splash_bg.png')}
+        style={styles.bg}
+        resizeMode="cover"
+      />
+      <SafeAreaView style={styles.safe}>
+        <KeyboardAvoidingView
+          style={styles.safe}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={styles.container}>
           <View style={styles.headerRow}>
             <Pressable accessibilityRole="button" onPress={() => navigation.goBack()}>
@@ -71,7 +78,8 @@ export function ForgotPasswordScreen({ navigation }: Props) {
             />
           </View>
         </View>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
   );
 }

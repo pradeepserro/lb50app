@@ -1,10 +1,12 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import type { NavigatorScreenParams } from '@react-navigation/native';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DASHBOARD_TAB_BAR_HEIGHT } from '@/components/screenLayout/dashboardLayout';
 import { Colors } from '@/theme/colors';
 import { HomeNavigator } from '@/screens/Dashboard/tabs/Home/navigation/HomeNavigator';
+import type { HomeStackParamList } from '@/screens/Dashboard/tabs/Home/navigation/types';
 import { FastingTab } from '@/screens/Dashboard/tabs/Fasting/FastingTab';
 import { EatTab } from '@/screens/Dashboard/tabs/Eat/EatTab';
 import HomeIcon from '@assets/icons/home_tab.svg';
@@ -13,15 +15,16 @@ import EatIcon from '@assets/icons/eat_tab.svg';
 import RelaxIcon from '@assets/icons/relax_tab.svg';
 import ProfileIcon from '@assets/icons/profile_tab.svg';
 import { RelaxNavigator } from '@/screens/Dashboard/tabs/Relax/navigation/RelaxNavigator';
-import { ProfileTab } from '@/screens/Dashboard/tabs/Profile/ProfileTab';
+import { ProfileNavigator } from '@/screens/Dashboard/tabs/Profile/navigation/ProfileNavigator';
+import type { ProfileStackParamList } from '@/screens/Dashboard/tabs/Profile/navigation/types';
 import { Fonts } from '@/utils/fonts';
 
 export type DashboardTabParamList = {
-  Home: undefined;
+  Home: NavigatorScreenParams<HomeStackParamList> | undefined;
   Fast: undefined;
   Eat: undefined;
   Relax: undefined;
-  Profile: undefined;
+  Profile: NavigatorScreenParams<ProfileStackParamList> | undefined;
 };
 
 const Tab = createBottomTabNavigator<DashboardTabParamList>();
@@ -84,7 +87,7 @@ export function DashboardTabs() {
       <Image
         source={require('@assets/images/splash_bg.png')}
         style={StyleSheet.absoluteFill}
-        resizeMode="contain"
+        resizeMode="cover"
       />
 
       <Tab.Navigator
@@ -133,11 +136,42 @@ export function DashboardTabs() {
           };
         }}
       >
-        <Tab.Screen name="Home" component={HomeNavigator} />
+        <Tab.Screen
+          name="Home"
+          component={HomeNavigator}
+          listeners={({ navigation }) => ({
+            tabPress: event => {
+              event.preventDefault();
+              navigation.navigate('Home', { screen: 'HomeMain' });
+            },
+          })}
+        />
         <Tab.Screen name="Fast" component={FastingTab} />
         <Tab.Screen name="Eat" component={EatTab} />
-        <Tab.Screen name="Relax" component={RelaxNavigator} />
-        <Tab.Screen name="Profile" component={ProfileTab} />
+        <Tab.Screen
+          name="Relax"
+          component={RelaxNavigator}
+          options={{ tabBarLabel: 'Coaching' }}
+          listeners={({ navigation }) => ({
+            tabPress: event => {
+              event.preventDefault();
+              navigation.navigate('Profile', {
+                screen: 'CreateTicket',
+                params: { ticketTypeGroupId: 2 },
+              });
+            },
+          })}
+        />
+        <Tab.Screen
+          name="Profile"
+          component={ProfileNavigator}
+          listeners={({ navigation }) => ({
+            tabPress: event => {
+              event.preventDefault();
+              navigation.navigate('Profile', { screen: 'ProfileMain' });
+            },
+          })}
+        />
       </Tab.Navigator>
     </View>
   );

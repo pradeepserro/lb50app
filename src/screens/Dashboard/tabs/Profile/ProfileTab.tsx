@@ -28,6 +28,7 @@ import CameraBlackIcon from '@assets/icons/camera_black.svg';
 import { PhoneNumberField } from '@/components/PhoneNumberField/PhoneNumberField';
 import ProfileOutlineIcon from '@assets/icons/profile_tab.svg';
 import LogoutIcon from '@assets/icons/logout.svg';
+import QuestionIcon from '@assets/icons/question.svg';
 import SaveIcon from '@assets/icons/save_white.svg';
 import UserIcon from '@assets/icons/user.svg';
 import UserFrameIcon from '@assets/icons/frame.svg';
@@ -677,19 +678,30 @@ export function ProfileTab({ navigation }: { navigation: any }) {
           </View> */}
               <View
                 style={[
-                  styles.saveWrap,
+                  styles.profileActionsRow,
                   { paddingBottom: Math.max(insets.bottom, 8) },
                 ]}
               >
+                <PrimaryButton
+                  title="Help & Support"
+                  onPress={() => navigation.navigate('Tickets')}
+                  style={styles.profileHelpSupportBtn}
+                  titleStyle={styles.profileActionTitle}
+                  renderRightAccessory={() => (
+                    <View style={styles.profileActionAccessory}>
+                      <QuestionIcon width={16} height={16} />
+                    </View>
+                  )}
+                />
                 <PrimaryButton
                   title="Save"
                   onPress={handleSave}
                   loading={savingProfile}
                   disabled={savingProfile}
-                  style={styles.saveBtn}
-                  titleStyle={styles.saveTitle}
+                  style={styles.profileSaveBtn}
+                  titleStyle={styles.profileActionTitle}
                   renderRightAccessory={() => (
-                    <View style={styles.saveAccessory}>
+                    <View style={styles.profileActionAccessory}>
                       <SaveIcon width={14} height={14} />
                     </View>
                   )}

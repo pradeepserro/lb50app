@@ -1,6 +1,6 @@
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { fetchFastHoursApi, saveFastApi } from '@/api/fast/fastEndpoints';
 import { showApiErrorAlert } from '@/feedback/errorFeedback';
@@ -15,6 +15,7 @@ import {
   formatApiDateTime,
   formatStartDate,
   formatStartTime,
+  parseApiDateTime,
 } from '@/components/DateTimePickerFlow/dateTimeUtils';
 import type { DashboardTabParamList } from '@/screens/Dashboard/DashboardTabs';
 import { PrimaryButtonLeft } from '@/components/PrimaryButtonLeft';
@@ -32,6 +33,10 @@ function parseFastHours(hours: string): number[] {
     .filter((value) => Number.isFinite(value) && value > 0);
 }
 
+function formatLocalDateTime(date: Date): string {
+  return `${formatApiDateTime(date)}:${String(date.getSeconds()).padStart(2, '0')}`;
+}
+
 export function FastingTab() {
   const navigation = useNavigation<BottomTabNavigationProp<DashboardTabParamList>>();
   const metrics = useFastingTabMetrics();
@@ -40,14 +45,34 @@ export function FastingTab() {
   const [startTime, setStartTime] = useState(createDefaultStartTime);
   const [pickerVisible, setPickerVisible] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [currentFastId, setCurrentFastId] = useState<string | number | null>(null);
+  const currentFastIdRef = useRef<string | number | null>(null);
 
   const loadFastHours = useCallback(async () => {
     try {
       const data = await fetchFastHoursApi();
+      const fastData = data as typeof data & {
+        id?: string | number | null;
+        selected_hours?: string | number | null;
+        start_datetime?: string | null;
+      };
+      const id = fastData.id;
       const hours = parseFastHours(data.hours);
+      const apiStartTime = parseApiDateTime(fastData.start_datetime);
+      const selectedHours = Number(fastData.selected_hours);
+
+      currentFastIdRef.current = id ?? null;
+      setCurrentFastId(currentFastIdRef.current);
+      setStartTime(apiStartTime ?? createDefaultStartTime());
       if (hours.length > 0) {
         setProtocols(hours);
-        setSelected((current) => (hours.includes(current) ? current : hours[0]));
+        setSelected((current) =>
+          Number.isFinite(selectedHours) && selectedHours > 0
+            ? selectedHours
+            : hours.includes(current)
+              ? current
+              : hours[0],
+        );
       }
     } catch (error) {
       showApiErrorAlert(error, 'Failed to load fast hours');
@@ -66,11 +91,16 @@ export function FastingTab() {
   }, [navigation]);
 
   const handleSave = useCallback(async () => {
+    const currentDateTime = formatLocalDateTime(new Date());
+
     setSaving(true);
     try {
       await saveFastApi({
-        start_datetime: formatApiDateTime(startTime),
+        id: currentFastIdRef.current,
+        start_datetime: formatLocalDateTime(startTime),
+        current_datetime: currentDateTime,
         hours: selected,
+        meal_feedback: 0,
       });
       navigation.navigate('Home');
     } catch (error) {
@@ -173,6 +203,16 @@ export function FastingTab() {
                 </Pressable>
               );
             })}
+          </View>
+
+          <View style={styles.feedbackRow}>
+            {currentFastId !== null &&
+            String(currentFastId).trim() !== '' &&
+            String(currentFastId).trim() !== '0' ? (
+              <Text style={styles.feedbackLabel}>
+                This is your current fasting information
+              </Text>
+            ) : null}
           </View>
 
           <View

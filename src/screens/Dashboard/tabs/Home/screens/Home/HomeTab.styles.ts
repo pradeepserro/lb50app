@@ -13,17 +13,22 @@ export const styles = StyleSheet.create({
   topSection: {
     paddingTop: 0,
   },
-  fastCurrentValue: {
+  fastCurrentDate: {
     marginTop: 6,
-    fontSize: 22,
+    fontSize: 14,
     color: Colors.darkBlue,
-    fontFamily: Fonts.MontserratBold,
+    fontFamily: Fonts.MontserratRegular,
     textAlign: 'center',
   },
-  fastCurrentPeriod: {
-    fontSize: 22,
+  fastCurrentTime: {
+    fontSize: 13,
     color: Colors.darkBlue,
-    fontFamily: Fonts.MontserratMedium,
+    fontFamily: Fonts.MontserratRegular,
+  },
+  fastCurrentPeriod: {
+    fontSize: 13,
+    color: Colors.darkBlue,
+    fontFamily: Fonts.MontserratRegular,
     textTransform: 'uppercase',
   },
   centerColumn: {

@@ -14,6 +14,7 @@ import {
   formatApiDateTime,
   formatStartDate,
   formatStartTime,
+  parseApiDateTime,
 } from '@/components/DateTimePickerFlow/dateTimeUtils';
 import { DashboardScreenLayout } from '@/components/screenLayout/DashboardScreenLayout';
 import { screenHeaderStyles } from '@/components/screenLayout/screenHeader.styles';
@@ -23,15 +24,27 @@ import { styles as baseStyles } from '@/screens/Dashboard/tabs/Eat/EatTab.styles
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { Colors } from '@/theme/colors';
+import client from '@/api/client';
 import { saveEatApi } from '@/api/eat/eatEndpoints';
 import { showApiErrorAlert } from '@/feedback/errorFeedback';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { DashboardTabParamList } from '@/screens/Dashboard/DashboardTabs';
 import { ScreenHeaderBackButton } from '@/components/screenLayout/ScreenHeaderBackButton';
+import { API_ENDPOINTS } from '@/utils/constant';
 
 type MealType = 'Breakfast' | 'Lunch' | 'Dinner';
 type AddOn = 'Snacks' | 'Drinks';
 type CarbLevel = 'High Carb' | 'Medium Carb' | 'Low Carb' | 'No Carb';
+
+type EatDetailsResponse = {
+  id?: string | number | null;
+  start_datetime?: string | null;
+  meal_type?: string | number | null;
+  addon_type?: string | number | null;
+  carb_level?: string | number | null;
+  photo?: string | null;
+  photo_id?: string | number | null;
+};
 
 const mealTypeMap = {
   Breakfast: 1,
@@ -44,8 +57,15 @@ const addOnMap = {
   Drinks: 2,
 };
 
-function encodeAddonType(selected: AddOn[]): number {
-  return selected.reduce((value, addon) => value | addOnMap[addon], 0);
+function encodeAddonType(selected: AddOn[]): string {
+  return (['Snacks', 'Drinks'] as AddOn[])
+    .filter(addon => selected.includes(addon))
+    .map(addon => addOnMap[addon])
+    .join(',') || '0';
+}
+
+function formatLocalDateTime(date: Date): string {
+  return `${formatApiDateTime(date)}:${String(date.getSeconds()).padStart(2, '0')}`;
 }
 
 const carbMap = {
@@ -71,13 +91,47 @@ export function EatTab() {
   const [carb, setCarb] = useState<CarbLevel>('High Carb');
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [mealImageUri, setMealImageUri] = useState<string | null>(null);
+  const [mealFeedback, setMealFeedback] = useState(false);
   const [startTime, setStartTime] = useState(createDefaultStartTime);
   const [pickerVisible, setPickerVisible] = useState(false);
+  const [existingEat, setExistingEat] = useState<{
+    id: string | number | null;
+    photoId: string | number | null;
+  }>({ id: null, photoId: null });
+
+  const loadEatData = useCallback(async () => {
+    try {
+      const response = await client.get<EatDetailsResponse>(API_ENDPOINTS.EAT);
+      const data = response.data;
+      const apiStartTime = parseApiDateTime(data.start_datetime);
+      const mealTypeValue = Number(data.meal_type);
+      const addOnValue = Number(data.addon_type);
+      const carbValue = Number(data.carb_level);
+
+      setExistingEat({
+        id: data.id ?? null,
+        photoId: data.photo_id ?? null,
+      });
+      setStartTime(apiStartTime ?? createDefaultStartTime());
+      setMealType(
+        mealTypes.find(type => mealTypeMap[type] === mealTypeValue) ?? 'Breakfast',
+      );
+      setSelectedAddOns(
+        addOns.filter(type => (addOnValue & addOnMap[type]) === addOnMap[type]),
+      );
+      setCarb(
+        carbLevels.find(level => carbMap[level] === carbValue) ?? 'High Carb',
+      );
+      setMealImageUri(data.photo?.trim() || null);
+    } catch (error) {
+      showApiErrorAlert(error, 'Failed to load meal information');
+    }
+  }, [addOns, carbLevels, mealTypes]);
 
   useFocusEffect(
     useCallback(() => {
-      setStartTime(createDefaultStartTime());
-    }, []),
+      loadEatData();
+    }, [loadEatData]),
   );
 
   useEffect(() => {
@@ -129,6 +183,7 @@ export function EatTab() {
     setSelectedAddOns([]);
     setCarb('High Carb');
     setMealImageUri(null);
+    setMealFeedback(false);
     setStartTime(createDefaultStartTime());
   }, []);
 
@@ -137,6 +192,8 @@ export function EatTab() {
   }, [navigation]);
 
   const handleSave = useCallback(async () => {
+    const currentDateTime = formatLocalDateTime(new Date());
+
     if (!mealType && selectedAddOns.length === 0) {
       Alert.alert('Type of meal required', 'Please select at least one meal type or add-on.');
       return;
@@ -145,10 +202,13 @@ export function EatTab() {
     setSaving(true);
     try {
       await saveEatApi({
+        id: existingEat.id,
         start_datetime: formatApiDateTime(startTime),
+        current_datetime: currentDateTime,
         meal_type: mealType ? mealTypeMap[mealType] : 0,
         addon_type: encodeAddonType(selectedAddOns),
         carb_level: carbMap[carb],
+        meal_feedback: mealFeedback ? 1 : 0,
         photo: mealImageUri
           ? {
             uri: mealImageUri,
@@ -164,7 +224,17 @@ export function EatTab() {
     } finally {
       setSaving(false);
     }
-  }, [carb, mealImageUri, mealType, navigation, resetForm, selectedAddOns, startTime]);
+  }, [
+    carb,
+    existingEat.id,
+    mealImageUri,
+    mealFeedback,
+    mealType,
+    navigation,
+    resetForm,
+    selectedAddOns,
+    startTime,
+  ]);
 
   return (
     <DashboardScreenLayout
@@ -313,6 +383,35 @@ export function EatTab() {
               })}
             </View>
           </View>
+
+          <View style={styles.feedbackRow}>
+            {existingEat.id !== null &&
+            String(existingEat.id).trim() !== '' &&
+            String(existingEat.id).trim() !== '0' ? (
+              <Text style={styles.feedbackLabel}>
+                Fasting currently in progress.
+              </Text>
+            ) : null}
+          </View>
+
+          <Pressable
+            accessibilityRole="checkbox"
+            accessibilityState={{ checked: mealFeedback }}
+            onPress={() => setMealFeedback(value => !value)}
+            style={styles.feedbackRow}
+          >
+            <View
+              style={[
+                styles.feedbackCheckbox,
+                mealFeedback ? styles.feedbackCheckboxSelected : null,
+              ]}
+            >
+              {mealFeedback ? <Text style={styles.feedbackCheckmark}>✓</Text> : null}
+            </View>
+            <Text style={styles.feedbackLabel}>
+              Please send me feedback on my meal
+            </Text>
+          </Pressable>
 
           <View style={styles.footer}>
             <PrimaryButtonLeft

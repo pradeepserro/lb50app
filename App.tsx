@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,6 +9,7 @@ import { ErrorFeedbackProvider } from '@/feedback/ErrorFeedbackProvider';
 import { RootNavigator } from '@/navigation/RootNavigator';
 import { Colors } from '@/theme/colors';
 import { persistor, store } from '@/store';
+import { initializeFirebaseMessaging } from '@/utils/firebaseMessaging';
 
 const styles = StyleSheet.create({
   root: {
@@ -17,6 +18,8 @@ const styles = StyleSheet.create({
 });
 
 export default function App() {
+  useEffect(() => initializeFirebaseMessaging(), []);
+
   return (
     <GestureHandlerRootView style={styles.root}>
       <Provider store={store}>

@@ -166,11 +166,45 @@ export const styles = StyleSheet.create({
   protocolHrsActive: {
     color: 'rgba(255,255,255,0.7)',
   },
+  feedbackRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 'auto',
+    paddingTop: 14,
+    paddingHorizontal: 12,
+    paddingBottom: 8,
+  },
+  feedbackCheckbox: {
+    width: 22,
+    height: 22,
+    borderRadius: 6,
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.titleTextColorGray,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  feedbackCheckboxSelected: {
+    backgroundColor: Colors.green,
+    borderColor: Colors.green,
+  },
+  feedbackCheckmark: {
+    color: Colors.white,
+    fontSize: 12,
+    fontFamily: Fonts.MontserratSemiBold,
+  },
+  feedbackLabel: {
+    flexShrink: 1,
+    color: Colors.darkBlue,
+    fontSize: 14,
+    fontFamily: Fonts.MontserratMedium,
+  },
   footer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 'auto',
+    marginTop: 0,
     paddingHorizontal: 12
   },
   prevBtn: {

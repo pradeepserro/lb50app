@@ -29,6 +29,8 @@ export type VideoPlayerProps = {
   progressTrackStyle?: StyleProp<ViewStyle>;
   progressFillStyle?: StyleProp<ViewStyle>;
   progressUpdateInterval?: number;
+  previewPositionSeconds?: number;
+  onPress?: () => void;
 };
 
 export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
@@ -43,6 +45,8 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       progressTrackStyle,
       progressFillStyle,
       progressUpdateInterval = 250,
+      previewPositionSeconds,
+      onPress,
     },
     ref,
   ) {
@@ -61,11 +65,27 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
     const pausedRef = useRef(paused);
     const currentTimeRef = useRef(currentTime);
     const durationRef = useRef(duration);
+    const hasStartedPlaybackRef = useRef(false);
     pausedRef.current = paused;
     currentTimeRef.current = currentTime;
     durationRef.current = duration;
 
     const togglePlayPauseFromGesture = useCallback(() => {
+      if (onPress) {
+        onPress();
+        return;
+      }
+
+      if (
+        pausedRef.current &&
+        previewPositionSeconds != null &&
+        !hasStartedPlaybackRef.current
+      ) {
+        playerRef.current?.seek(0);
+        setCurrentTime(0);
+        hasStartedPlaybackRef.current = true;
+      }
+
       if (
         pausedRef.current &&
         durationRef.current > 0 &&
@@ -75,7 +95,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
         setCurrentTime(0);
       }
       setPaused(prev => !prev);
-    }, []);
+    }, [onPress, previewPositionSeconds]);
 
     const singleTap = useMemo(
       () =>
@@ -103,9 +123,25 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
 
     const gesture = useMemo(() => Gesture.Exclusive(doubleTap, singleTap), [doubleTap, singleTap]);
 
-    const handleLoad = useCallback((data: OnLoadData) => {
-      setDuration(data.duration ?? 1);
-    }, []);
+    const handleLoad = useCallback(
+      (data: OnLoadData) => {
+        const videoDuration = data.duration ?? 1;
+        setDuration(videoDuration);
+
+        if (
+          previewPositionSeconds != null &&
+          !hasStartedPlaybackRef.current
+        ) {
+          const previewPosition = Math.min(
+            previewPositionSeconds,
+            Math.max(videoDuration - 0.1, 0),
+          );
+          playerRef.current?.seek(previewPosition);
+          setCurrentTime(previewPosition);
+        }
+      },
+      [previewPositionSeconds],
+    );
 
     const handleProgress = useCallback((data: OnProgressData) => {
       setCurrentTime(data.currentTime);
@@ -115,6 +151,7 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
       ref,
       () => ({
         seekToStartAndPlay: () => {
+          hasStartedPlaybackRef.current = true;
           playerRef.current?.seek(0);
           setCurrentTime(0);
           setPaused(false);
@@ -130,7 +167,10 @@ export const VideoPlayer = forwardRef<VideoPlayerHandle, VideoPlayerProps>(
             ref={playerRef}
             source={source}
             style={[styles.video, videoStyle]}
-            paused={paused}
+            paused={onPress ? false : paused}
+            muted={onPress != null}
+            repeat={onPress != null}
+            hideShutterView={previewPositionSeconds != null}
             resizeMode="cover"
             progressUpdateInterval={progressUpdateInterval}
             onLoad={handleLoad}

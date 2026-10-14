@@ -1,3 +1,4 @@
 export type RelaxStackParamList = {
-  Relax: undefined;
+  Relax: { relaxTimeReductionSeconds?: number } | undefined;
+  Video: { videoUrl?: string } | undefined;
 };

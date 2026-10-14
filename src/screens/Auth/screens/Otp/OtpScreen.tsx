@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useDispatch } from 'react-redux';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { AuthStackParamList } from '@/screens/Auth/navigation/types';
 import { styles } from '@/screens/Auth/screens/Otp/OtpScreen.styles';
@@ -18,22 +19,27 @@ import { PrimaryButton } from '@/components/PrimaryButton';
 import ClockIcon from '@assets/icons/clock.svg';
 import { verifyOtpApi } from '@/api/auth/authEndpoints';
 import { showApiErrorAlert } from '@/feedback/errorFeedback';
+import { loginSuccess } from '@/store/authSlice';
+import type { AppDispatch } from '@/store';
 import {
   getQuestionnaireCompleted,
   setAuthToken,
   setHasOnboarded,
   setQuestionnaireCompleted,
 } from '@/utils/storage';
+import { syncFirebaseTokenForAuthenticatedUser } from '@/utils/firebaseMessaging';
 
 type Props = NativeStackScreenProps<AuthStackParamList, 'Otp'>;
 
 export function OtpScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
+  const dispatch = useDispatch<AppDispatch>();
   const { phone, email } = route.params;
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
   const [secondsLeft, setSecondsLeft] = useState(119);
   const inputRef = useRef<TextInput | null>(null);
+  const isVerifyingRef = useRef(false);
 
   const canSubmit = useMemo(() => otp.trim().length === 6 && !loading, [otp, loading]);
 
@@ -54,22 +60,38 @@ export function OtpScreen({ navigation, route }: Props) {
     return () => clearTimeout(t);
   }, [secondsLeft]);
 
-  const onVerify = async () => {
-    if (!canSubmit) return;
+  const onVerify = async (code = otp) => {
+    const completedOtp = code.trim();
+    if (completedOtp.length !== 6 || loading || isVerifyingRef.current) return;
 
+    isVerifyingRef.current = true;
+    Keyboard.dismiss();
     setLoading(true);
     try {
       const res = await verifyOtpApi({
         phone,
-        otp,
+        otp: completedOtp,
       });
 
       if (res.status) {
         const token = res.token;
         await setAuthToken(token);
+        syncFirebaseTokenForAuthenticatedUser().catch(() => undefined);
         await setHasOnboarded(true);
+        if (res.user) {
+          dispatch(
+            loginSuccess({
+              user: {
+                id: String(res.user.id),
+                name: res.user.name,
+                email: res.user.email,
+              },
+              token,
+            }),
+          );
+        }
         if (email) {
-          navigation.navigate('ResetPassword', { email, otp });
+          navigation.navigate('ResetPassword', { email, otp: completedOtp });
         } else {
           const questionnaireCompleted =
             res.user != null
@@ -96,6 +118,7 @@ export function OtpScreen({ navigation, route }: Props) {
     } catch (error: unknown) {
       showApiErrorAlert(error);
     } finally {
+      isVerifyingRef.current = false;
       setLoading(false);
     }
   };
@@ -103,6 +126,9 @@ export function OtpScreen({ navigation, route }: Props) {
   const onChangeOtp = (value: string) => {
     const next = value.replace(/\D/g, '').slice(0, 6);
     setOtp(next);
+    if (next.length === 6 && next !== otp) {
+      onVerify(next);
+    }
   };
 
   const mm = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
@@ -126,7 +152,7 @@ export function OtpScreen({ navigation, route }: Props) {
             <View style={styles.header}>
               <Text style={styles.h1}>Verify Identity</Text>
               <Text style={styles.h2}>
-                We've sent a 6 digit verification code to you EMAIL address.
+                We've sent a 6 digit verification code to your EMAIL address.
               </Text>
             </View>
 
@@ -194,7 +220,7 @@ export function OtpScreen({ navigation, route }: Props) {
                 style={[styles.cardFooter, { paddingBottom: Math.max(insets.bottom, 16) }]}>
                 <PrimaryButton
                   title="Verify & Continue"
-                  onPress={onVerify}
+                  onPress={() => onVerify()}
                   disabled={!canSubmit}
                   loading={loading}
                   style={styles.continueBtn}

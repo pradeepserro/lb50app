@@ -1,0 +1,187 @@
+import { StyleSheet } from 'react-native';
+import { Colors } from '@/theme/colors';
+import { Fonts } from '@/utils/fonts';
+
+export const styles = StyleSheet.create({
+  rootContent: {
+    flex: 1,
+    minHeight: 0,
+  },
+  keyboardAvoid: {
+    flex: 1,
+    minHeight: 0,
+  },
+  scroll: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 12,
+  },
+  headerSideRight: {
+    justifyContent: 'flex-end',
+  },
+  notificationIcon: {
+    width: 34,
+    height: 34,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  formSection: {
+    marginBottom: 12,
+  },
+  ticketNumberBadge: {
+    alignSelf: 'flex-start',
+    minHeight: 38,
+    marginBottom: 12,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    backgroundColor: Colors.white,
+    justifyContent: 'center',
+  },
+  ticketNumberText: {
+    color: Colors.green,
+    fontSize: 14,
+    fontFamily: Fonts.MontserratSemiBold,
+  },
+  fieldLabel: {
+    marginBottom: 6,
+    color: Colors.darkBlue,
+    fontSize: 12,
+    fontFamily: Fonts.MontserratSemiBold,
+    textTransform: 'uppercase',
+  },
+  titleInput: {
+    height: 46,
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    backgroundColor: Colors.white,
+    color: Colors.darkBlue,
+    fontSize: 14,
+    fontFamily: Fonts.MontserratRegular,
+  },
+  descriptionControl: {
+    minHeight: 132,
+    borderRadius: 8,
+    backgroundColor: Colors.white,
+  },
+  descriptionInput: {
+    minHeight: 132,
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 30,
+    color: Colors.darkBlue,
+    fontSize: 14,
+    lineHeight: 19,
+    fontFamily: Fonts.MontserratRegular,
+  },
+  characterCounter: {
+    position: 'absolute',
+    right: 10,
+    bottom: 8,
+    color: Colors.titleTextColorGray,
+    fontSize: 10,
+    fontFamily: Fonts.MontserratRegular,
+  },
+  mediaSection: {
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    marginBottom: 6,
+    color: Colors.darkBlue,
+    fontSize: 12,
+    fontFamily: Fonts.MontserratSemiBold,
+    textTransform: 'uppercase',
+  },
+  imageGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  imageCell: {
+    width: '23%',
+    aspectRatio: 1,
+    borderRadius: 6,
+    backgroundColor: Colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  selectedImage: {
+    width: '100%',
+    height: '100%',
+  },
+  addAttachmentText: {
+    color: Colors.titleTextColorGray,
+    fontSize: 16,
+    fontFamily: Fonts.MontserratMedium,
+  },
+  removeButton: {
+    position: 'absolute',
+    top: 4,
+    right: 4,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: Colors.red,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 2,
+  },
+  videoGrid: {
+    marginTop: 8,
+    flexDirection: 'row',
+    gap: 8,
+  },
+  videoCell: {
+    flex: 1,
+    aspectRatio: 1.8,
+    borderRadius: 6,
+    backgroundColor: Colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+    overflow: 'hidden',
+  },
+  emptyVideoPlayCircle: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    borderWidth: 2,
+    borderColor: Colors.titleTextColorGray,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emptyVideoPlayTriangle: {
+    width: 0,
+    height: 0,
+    marginLeft: 3,
+    borderTopWidth: 5,
+    borderBottomWidth: 5,
+    borderLeftWidth: 8,
+    borderTopColor: 'transparent',
+    borderBottomColor: 'transparent',
+    borderLeftColor: Colors.titleTextColorGray,
+  },
+  selectedVideo: {
+    width: '100%',
+    height: '100%',
+  },
+  selectedVideoPlayCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+  },
+  selectedVideoPlayTriangle: {
+    borderTopWidth: 6,
+    borderBottomWidth: 6,
+    borderLeftWidth: 10,
+  },
+  hiddenVideoProgress: {
+    opacity: 0,
+  },
+  actionsFooter: {
+    paddingTop: 8,
+    paddingBottom: 8,
+  },
+});

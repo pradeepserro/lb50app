@@ -5,10 +5,13 @@ import { EatResponse, SaveEatParams } from '@/api/eat/eat';
 function buildEatFormData(params: SaveEatParams): FormData {
   const formData = new FormData();
 
+  formData.append('id', params.id == null ? '' : String(params.id));
   formData.append('start_datetime', params.start_datetime);
+  formData.append('current_datetime', params.current_datetime);
   formData.append('meal_type', String(params.meal_type));
   formData.append('addon_type', String(params.addon_type));
   formData.append('carb_level', String(params.carb_level));
+  formData.append('meal_feedback', String(params.meal_feedback));
 
   if (params.photo) {
     formData.append('photo', {
