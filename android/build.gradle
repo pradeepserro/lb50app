@@ -20,6 +20,6 @@ buildscript {
 }
 
 // Ensure Gradle uses an absolute Node path (Android Studio often lacks PATH).
-rootProject.ext.NODE_BINARY = "C:/Program Files/nodejs/node.exe"
+rootProject.ext.NODE_BINARY = "/usr/local/bin/node"
 
 apply plugin: "com.facebook.react.rootproject"

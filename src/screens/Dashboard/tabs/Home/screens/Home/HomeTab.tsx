@@ -4,6 +4,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Linking, Pressable, ScrollView, Text, View } from 'react-native';
+import Svg, { Circle, Line, Path } from 'react-native-svg';
 import BookGreenIcon from '@assets/icons/book_green.svg';
 import CalendarGreenIcon from '@assets/icons/calendar_green.svg';
 import LineIcon from '@assets/icons/line.svg';
@@ -13,16 +14,14 @@ import ShopIcon from '@assets/icons/shop.svg';
 import StatusUpGreenIcon from '@assets/icons/statusup_green.svg';
 import TimerYellowIcon from '@assets/icons/tasting_tab.svg';
 import RelaxIcon from '@assets/icons/relax.svg';
+import ExerciseIcon from '@assets/icons/exercise.svg';
 import { fetchHomeApi } from '@/api/home/homeEndpoints';
 import { ActionRing } from '@/components/ActionRing/ActionRing';
 import {
   formatFastCurrentTime,
   parseApiDateTime,
 } from '@/components/DateTimePickerFlow/dateTimeUtils';
-import {
-  useRingStyles,
-  type RingBubblePlacement,
-} from '@/components/ActionRing/ActionRing.styles';
+import { useRingStyles } from '@/components/ActionRing/ActionRing.styles';
 import { PrimaryButtonLeft } from '@/components/PrimaryButtonLeft';
 import { StatusCard } from '@/components/StatusCard/StatusCard';
 import { DashboardScreenLayout } from '@/components/screenLayout/DashboardScreenLayout';
@@ -33,6 +32,18 @@ import type { DashboardTabParamList } from '@/screens/Dashboard/DashboardTabs';
 import type { HomeStackParamList } from '@/screens/Dashboard/tabs/Home/navigation/types';
 import { showApiErrorAlert } from '@/feedback/errorFeedback';
 import { styles } from '@/screens/Dashboard/tabs/Home/screens/Home/HomeTab.styles';
+
+function SmartGoalTargetIcon() {
+  return (
+    <Svg width={23} height={23} viewBox="0 0 28 28" fill="none">
+      <Circle cx={12} cy={16} r={9} stroke="#FFFFFF" strokeWidth={1.8} />
+      <Circle cx={12} cy={16} r={5.5} stroke="#FFFFFF" strokeWidth={1.8} />
+      <Circle cx={12} cy={16} r={2} fill="#FFFFFF" />
+      <Line x1={12} y1={16} x2={24} y2={4} stroke="#FFFFFF" strokeWidth={2} strokeLinecap="round" />
+      <Path d="M18 4H24V10" stroke="#FFFFFF" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+    </Svg>
+  );
+}
 
 const EMPTY_FAST_TIME = { date: '', time: '', period: '' };
 const DEFAULT_STATUS_TEXT = 'FAST STATUS';
@@ -129,7 +140,7 @@ type HomeTabNavigationProp = CompositeNavigationProp<
 export function HomeTab() {
   const navigation = useNavigation<HomeTabNavigationProp>();
   const tabBarInset = useDashboardTabBarInset();
-  const { getPlacementStyle, metrics } = useRingStyles();
+  const { getEvenBubblePlacementStyle, metrics } = useRingStyles();
   const [startFastTime, setStartFastTime] = useState(EMPTY_FAST_TIME);
   const [endFastTime, setEndFastTime] = useState(EMPTY_FAST_TIME);
   const [statusText, setStatusText] = useState(DEFAULT_STATUS_TEXT);
@@ -191,7 +202,6 @@ export function HomeTab() {
     () =>
       [
         {
-          placement: 'top' as RingBubblePlacement,
           label: 'Log',
           icon: (
             <CalendarGreenIcon
@@ -203,7 +213,6 @@ export function HomeTab() {
           onPress: () => navigation.navigate('DailyHealthLog'),
         },
         {
-          placement: 'left' as RingBubblePlacement,
           label: 'Analyse',
           icon: (
             <StatusUpGreenIcon
@@ -215,7 +224,6 @@ export function HomeTab() {
           onPress: () => navigation.navigate('Analyze'),
         },
         {
-          placement: 'right' as RingBubblePlacement,
           label: 'Learn',
           icon: (
             <BookGreenIcon
@@ -227,7 +235,6 @@ export function HomeTab() {
           onPress: () => navigation.navigate('Learn'),
         },
         {
-          placement: 'bottom' as RingBubblePlacement,
           label: 'Relax',
           icon: (
             <RelaxIcon
@@ -237,6 +244,12 @@ export function HomeTab() {
           ),
           isPressable: true,
           onPress: () => navigation.navigate('Relax'),
+        },
+        {
+          label: 'Mobility',
+          icon: <ExerciseIcon width={metrics.bubbleIconSize} height={metrics.bubbleIconSize} />,
+          isPressable: true,
+          onPress: () => navigation.navigate('Mobility'),
         },
       ],
     [metrics.bubbleIconSize, navigation],
@@ -258,7 +271,7 @@ export function HomeTab() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={[
           styles.scrollContent,
-          { paddingBottom: tabBarInset },
+          { paddingBottom: Math.max(tabBarInset, 24) + 12 },
         ]}
       >
         {/* Fast current status (top card) */}
@@ -272,6 +285,20 @@ export function HomeTab() {
           />
         </View>
 
+        <View style={styles.smartGoalsButtonWrap}>
+          <PrimaryButtonLeft
+            title="SMART Goals"
+            onPress={() => navigation.navigate('SmartGoals')}
+            style={styles.smartGoalsButton}
+            titleStyle={styles.prevBtnText}
+            renderLeftAccessory={() => (
+              <View style={styles.smartGoalIconCircle}>
+                <SmartGoalTargetIcon />
+              </View>
+            )}
+          />
+        </View>
+
         {/* Ring + action bubbles */}
         <ActionRing
           bubbles={bubbles?.map((b, index) => ({
@@ -280,7 +307,7 @@ export function HomeTab() {
             icon: b.icon,
             onPress: b.onPress,
             isPressable: b.isPressable,
-            style: getPlacementStyle(b.placement, 'home'),
+            style: getEvenBubblePlacementStyle(index, bubbles.length),
             labelNumberOfLines: 1
           }))}
         >

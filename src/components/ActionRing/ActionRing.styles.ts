@@ -49,6 +49,7 @@ export type RingStylesResult = {
     placement: RingBubblePlacement,
     variant?: RingPlacementVariant,
   ) => ViewStyle;
+  getEvenBubblePlacementStyle: (slotIndex: number, count: number) => ViewStyle;
   /** Evenly spaces six bubbles on the dashed ring (clockwise from top). */
   getSixBubblePlacementStyle: (slotIndex: number) => ViewStyle;
   metrics: RingMetrics;
@@ -186,6 +187,12 @@ export function useRingStyles(): RingStylesResult {
       ],
     });
 
+    const getEvenBubblePlacementStyle = (slotIndex: number, count: number): ViewStyle => {
+      const safeCount = Math.max(1, count);
+      const angle = -Math.PI / 2 + (2 * Math.PI * (slotIndex % safeCount)) / safeCount;
+      return getOrbitalPlacementStyle(angle);
+    };
+
     const getSixBubblePlacementStyle = (slotIndex: number): ViewStyle => {
       const startAngle = -Math.PI / 2;
       const angle =
@@ -252,6 +259,7 @@ export function useRingStyles(): RingStylesResult {
       bubbleStyles,
       getPlacementStyle,
       getSixBubblePlacementStyle,
+      getEvenBubblePlacementStyle,
       metrics,
     };
   }, [width]);

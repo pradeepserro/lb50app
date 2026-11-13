@@ -5,9 +5,9 @@ import { Fonts } from '@/utils/fonts';
 export const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 80,
-    paddingTop: 16,
+    paddingTop: 8,
     justifyContent: 'space-between',
-    gap: 24,
+    gap: 8,
     paddingHorizontal: 12,
   },
   topSection: {
@@ -73,13 +73,16 @@ export const styles = StyleSheet.create({
     fontFamily: Fonts.MontserratBold,
     letterSpacing: 1,
   },
+  smartGoalsButtonWrap: { alignItems: 'center', marginTop: 0, marginBottom: 0 },
+  smartGoalsButton: { height: 45, backgroundColor: '#1769D2', alignItems: 'center', justifyContent: 'center' },
+  smartGoalIconCircle: { width: 38, height: 38, borderRadius: 19, backgroundColor: '#1052A9', alignItems: 'center', justifyContent: 'center', marginLeft: 4 },
   shopBtn: {
-    marginTop: 14,
+    marginTop: 0,
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 8,
-    paddingBottom: 24
+    marginBottom: 0,
+    paddingBottom: 0
   },
   shopBtnText: {
     color: Colors.white,
