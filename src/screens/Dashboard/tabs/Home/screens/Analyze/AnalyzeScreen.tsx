@@ -1,6 +1,6 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Image, ScrollView, Text, View } from 'react-native';
 import Svg, { Circle, Path } from 'react-native-svg';
 import LogoPng from '@assets/icons/logo.png';
@@ -32,7 +32,7 @@ type WeeklySummaryGraph = AnalyzeGraph & {
   colors2?: string[];
 };
 
-const WEEKLY_SUMMARY_TYPE_ID = 5;
+const TEXTBOX_TYPE_ID = 5;
 const SIX_PILLARS_MAX_VALUE = 10;
 
 function invertSixPillarsRadialScale(graph: AnalyzeGraph): AnalyzeGraph {
@@ -150,31 +150,44 @@ export function AnalyzeScreen({ navigation }: Props) {
   const [tab, setTab] = useState(0);
   const [graphs, setGraphs] = useState<AnalyzeGraph[]>([]);
   const [loading, setLoading] = useState(true);
+  const requestIdRef = useRef(0);
   const tabContent = TAB_SECTION_CONTENT[tab];
   const isSixPillarsTab = TAB_TYPE_IDS[tab] === ANALYZE_TAB_TYPE_IDS.SIX_PILLARS;
-  const isWeeklyTab = TAB_TYPE_IDS[tab] === ANALYZE_TAB_TYPE_IDS.WEEKLY;
 
   const loadAnalyzeData = useCallback(async (tabIndex: number) => {
+    const requestId = ++requestIdRef.current;
+    setGraphs([]);
     setLoading(true);
     try {
       const tabTypeId = TAB_TYPE_IDS[tabIndex];
       const data = await fetchAnalyzeApi(tabTypeId);
+      if (requestId !== requestIdRef.current) return;
       setGraphs(sortGraphsById(data.graphs));
     } catch (error) {
+      if (requestId !== requestIdRef.current) return;
       showApiErrorAlert(error, 'Analyze Unavailable');
       setGraphs([]);
     } finally {
-      setLoading(false);
+      if (requestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
   }, []);
 
   useFocusEffect(
     useCallback(() => {
       loadAnalyzeData(tab);
+      return () => {
+        requestIdRef.current += 1;
+      };
     }, [loadAnalyzeData, tab]),
   );
 
   const handleTabChange = (nextTab: number) => {
+    if (nextTab === tab) return;
+    requestIdRef.current += 1;
+    setGraphs([]);
+    setLoading(true);
     setTab(nextTab);
   };
 
@@ -229,7 +242,7 @@ export function AnalyzeScreen({ navigation }: Props) {
             </View>
           ) : (
             graphs.map((graph) =>
-              isWeeklyTab && graph.type_id === WEEKLY_SUMMARY_TYPE_ID ? (
+              graph.type_id === TEXTBOX_TYPE_ID ? (
                 <WeeklySummaryCard
                   key={graph.id}
                   graph={graph as WeeklySummaryGraph}

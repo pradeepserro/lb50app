@@ -1,6 +1,7 @@
 import axios from 'axios';
 import type { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { API_URL } from '@/utils/constant';
+import { waitForInternetConnection } from '@/utils/networkConnectivity';
 import { getAuthToken } from '@/utils/storage';
 
 const REDACTED = '[REDACTED]';
@@ -275,6 +276,8 @@ function logApiError(error: unknown): void {
 
 client.interceptors.request.use(
     async (config) => {
+        await waitForInternetConnection();
+
         const token = await getAuthToken();
 
         if (token) {
